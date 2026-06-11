@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI WADA AIRLINE APP</title>
+
+<style>
+body{font-family:Arial;margin:0;background:#f5f7fa}
+
+header{
+background:linear-gradient(135deg,#004aad,#00bfff);
+color:white;
+text-align:center;
+padding:25px;
+}
+
+.menu{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+padding:15px;
+}
+
+.menu button{
+padding:15px;
+border:none;
+border-radius:10px;
+background:#004aad;
+color:white;
+}
+
+.page{display:none;padding:15px}
+.card{
+background:white;
+padding:15px;
+border-radius:10px;
+margin-top:10px;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin:8px 0;
+}
+
+.btn{
+background:#004aad;
+color:white;
+padding:12px;
+border:none;
+width:100%;
+border-radius:5px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>AI WADA AIRLINE APP</h2>
+</header>
+
+<!-- HOME -->
+<div id="home" class="page" style="display:block">
+
+<div class="menu">
+<button onclick="openPage('purchase')">✈ Purchase</button>
+<button onclick="openPage('reservation')">📅 Reservation</button>
+<button onclick="openPage('destination')">🗺 Destination</button>
+<button onclick="openPage('trip')">🧳 Plan Trip</button>
+<button onclick="openPage('gallery')">🖼 Gallery</button>
+<button onclick="openPage('social')">🌐 Social</button>
+<button onclick="openPage('about')">ℹ About</button>
+<button onclick="openPage('contact')">📞 Contact</button>
+</div>
+
+</div>
+
+<!-- PURCHASE -->
+<div id="purchase" class="page">
+<div class="card">
+
+<h3>Search Flight</h3>
+
+<input id="name" placeholder="Full Name">
+
+<select id="from">
+<option>Lagos</option>
+<option>Abuja</option>
+<option>Kano</option>
+<option>Port Harcourt</option>
+<option>Enugu</option>
+</select>
+
+<select id="to">
+<option>Abuja</option>
+<option>Lagos</option>
+<option>Kano</option>
+<option>Yola</option>
+<option>Enugu</option>
+</select>
+
+<select id="airline">
+<option>Air Peace</option>
+<option>Azman Air</option>
+<option>United Nigeria</option>
+<option>Rano Air</option>
+<option>Ibom Air</option>
+</select>
+
+<input type="date" id="date">
+
+<input type="number" id="adult" placeholder="Adults">
+<input type="number" id="child" placeholder="Children">
+
+<button class="btn" onclick="search()">Search Flight</button>
+
+<div id="result"></div>
+
+</div>
+</div>
+
+<!-- PASSENGER INFO (NEW) -->
+<div id="passenger" class="page">
+<div class="card">
+
+<h3>Passenger Details</h3>
+
+<input id="pname" placeholder="Full Name">
+<input id="phone" placeholder="Phone Number">
+<input id="email" placeholder="Email Address">
+<input id="cemail" placeholder="Confirm Email">
+
+<button class="btn" onclick="goPayment()">Continue</button>
+
+</div>
+</div>
+
+<!-- PAYMENT -->
+<div id="payment" class="page">
+<div class="card" id="paybox"></div>
+</div>
+
+<!-- TICKET -->
+<div id="ticket" class="page">
+<div class="card" id="ticketbox"></div>
+</div>
+
+<script>
+
+let data={};
+
+function openPage(p){
+document.querySelectorAll(".page").forEach(x=>x.style.display="none");
+document.getElementById(p).style.display="block";
+}
+
+function search(){
+
+let from=document.getElementById("from").value;
+let to=document.getElementById("to").value;
+let airline=document.getElementById("airline").value;
+
+let seat="SEAT-"+Math.floor(Math.random()*200);
+let price=50000;
+
+data={from,to,airline,seat,price};
+
+document.getElementById("result").innerHTML=`
+<h3>Flight Found ✔</h3>
+<p>${from} → ${to}</p>
+<p>${airline}</p>
+<p>Seat: ${seat}</p>
+<p>Price: ₦${price}</p>
+
+<button class="btn" onclick="openPage('passenger')">Next</button>
+`;
+}
+
+function goPayment(){
+
+let pname=document.getElementById("pname").value;
+let phone=document.getElementById("phone").value;
+let email=document.getElementById("email").value;
+let cemail=document.getElementById("cemail").value;
+
+if(email != cemail){
+alert("Email does not match!");
+return;
+}
+
+data.pname=pname;
+data.phone=phone;
+data.email=email;
+
+openPage('payment');
+
+document.getElementById("paybox").innerHTML=`
+<h3>Payment</h3>
+
+<p><b>Name:</b> ${data.pname}</p>
+<p><b>Phone:</b> ${data.phone}</p>
+<p><b>Route:</b> ${data.from} → ${data.to}</p>
+<p><b>Airline:</b> ${data.airline}</p>
+<p><b>Seat:</b> ${data.seat}</p>
+<p><b>Total:</b> ₦${data.price}</p>
+
+<input placeholder="Card Number">
+<input placeholder="Expiry Date">
+<input placeholder="CVV">
+
+<button class="btn" onclick="pay()">Pay Now</button>
+`;
+}
+
+function pay(){
+
+openPage('ticket');
+
+document.getElementById("ticketbox").innerHTML=`
+<h3>Ticket Confirmed ✔</h3>
+
+<p><b>Name:</b> ${data.pname}</p>
+<p><b>Phone:</b> ${data.phone}</p>
+<p><b>Email:</b> ${data.email}</p>
+<p><b>Route:</b> ${data.from} → ${data.to}</p>
+<p><b>Airline:</b> ${data.airline}</p>
+<p><b>Seat:</b> ${data.seat}</p>
+<p><b>Total Paid:</b> ₦${data.price}</p>
+
+<br>
+
+<p style="color:green">
+✔ Email Sent (Demo)<br>
+✔ WhatsApp Sent (Demo)<br>
+✔ Ticket Generated
+</p>
+`;
+}
+
+</script>
+
+</body>
+</html>
